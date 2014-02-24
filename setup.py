@@ -10,7 +10,7 @@ setup(
     long_description='\n'.join((
         "Routines for programatically generating Google Chrome .crx files.",
         "Good for Python-based build tools e.g. Fabric, Ansible, Paver and ",
-        "possibly others"))
+        "possibly others")),
     packages=('crx',),
     url='https://github.com/JacobOscarson/pycrxlib',
     author='Jacob Oscarson',
