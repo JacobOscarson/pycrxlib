@@ -19,7 +19,7 @@ manager (apt-get/brew/rpm etc).
 
 setup(
     name='pycrxlib',
-    version='0.1',
+    version='1.0.0',
     description='Integrates generation of .crx files with build systems',
     long_description='\n'.join((
         "Routines for programatically generating Google Chrome .crx files.",
