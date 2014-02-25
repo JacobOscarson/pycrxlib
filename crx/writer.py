@@ -1,4 +1,5 @@
 import os
+import base64
 import io
 import zipfile
 import struct
@@ -21,9 +22,12 @@ def sign(data, pem):
     pkey = M2Crypto.EVP.load_key_string(pem)
     pkey.sign_init()
     pkey.sign_update(data)
+    rsakey = M2Crypto.RSA.load_key_string(pem)
     buf = M2Crypto.BIO.MemoryBuffer()
-    pkey.save_key_bio(buf, cipher=None)
-    return (buf.getvalue(), pkey.sign_final())
+    rsakey.save_pub_key_bio(buf)
+    # See http://stackoverflow.com/a/21711195/288672
+    return (base64.b64decode(''.join(buf.read().split(os.linesep)[1:-2])),
+            pkey.sign_final())
 
 def write(out, data, der_key, signed):
     out.write('Cr24') # magic
