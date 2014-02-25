@@ -1,6 +1,7 @@
 import os
 import io
 import zipfile
+import struct
 
 import M2Crypto
 
@@ -23,3 +24,10 @@ def sign(data, pem):
     buf = M2Crypto.BIO.MemoryBuffer()
     pkey.save_key_bio(buf, cipher=None)
     return (buf.getvalue(), pkey.sign_final())
+
+def write(out, data, der_key, signed):
+    out.write('Cr24') # magic
+    out.write(struct.pack('<III', 2, len(der_key), len(signed)))
+    out.write(der_key)
+    out.write(signed)
+    out.write(data)

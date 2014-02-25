@@ -1,5 +1,10 @@
 import os
 import zipfile
+import struct
+
+from cStringIO import StringIO
+
+import pytest
 
 from crx.writer import zipdir, sign
 
@@ -18,3 +23,29 @@ goes_nowhere_pem = open('test/goes_nowhere.pkey').read()
 
 def test_sign():
     sign('some data', goes_nowhere_pem) # also, don't raise
+
+@pytest.fixture
+def clear_crx():
+    if os.path.exists('test-ext.crx'):
+        os.unlink('test-ext.crx')
+
+def checkcrx():
+    __tracebackhide__ = True
+    with open('test-ext.crx', 'rb') as archive:
+        assert archive.read(len('Cr24')) == 'Cr24'
+        version, keylen, siglen = (
+            struct.unpack('<III', archive.read(struct.calcsize('<III'))) )
+        assert version == 2
+        archive.read(keylen)
+        archive.read(siglen)
+        assert len(zipfile.ZipFile(StringIO(archive.read())).filelist) == 2
+
+def test_roundtrip_inline_pem(clear_crx):
+    import crx
+    crx.write('test/dirfix', 'test-ext.crx', pem=goes_nowhere_pem)
+    checkcrx()
+
+def test_rountrip_file_pem(clear_crx):
+    import crx
+    crx.write('test/dirfix', 'test-ext.crx', pemfile='test/goes_nowhere.pkey')
+    checkcrx()
