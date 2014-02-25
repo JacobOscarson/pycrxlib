@@ -2,7 +2,7 @@ import os
 import io
 import zipfile
 
-from M2Crypto import EVP
+import M2Crypto
 
 def zipdir(path):
     def dozip(path, fp):
@@ -17,7 +17,9 @@ def zipdir(path):
         return stream.getvalue()
 
 def sign(data, pem):
-    pkey = EVP.load_key_string(pem)
+    pkey = M2Crypto.EVP.load_key_string(pem)
     pkey.sign_init()
     pkey.sign_update(data)
-    return pkey.sign_final()
+    buf = M2Crypto.BIO.MemoryBuffer()
+    pkey.save_key_bio(buf, cipher=None)
+    return (buf.getvalue(), pkey.sign_final())
