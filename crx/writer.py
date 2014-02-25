@@ -7,14 +7,18 @@ import struct
 import M2Crypto
 
 def zipdir(path):
-    def dozip(path, fp):
-        for root, dirs, files in os.walk(path):
-            for file in files:
-                fp.write(os.path.join(root, file))
-
     with io.BytesIO() as stream:
         zfp = zipfile.ZipFile(stream, 'w', zipfile.ZIP_DEFLATED)
-        dozip(path, zfp)
+
+        cwd = os.getcwd()
+        try:
+            os.chdir(path)
+            for root, dirs, files in os.walk('.'):
+                for name in files:
+                    zfp.write(os.path.join(root, name))
+        finally:
+            os.chdir(cwd)
+
         zfp.close()
         return stream.getvalue()
 
