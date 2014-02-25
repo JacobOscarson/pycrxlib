@@ -1,7 +1,21 @@
+import subprocess
+
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
+
+try:
+    subprocess.call(['swig', '-version'])
+except OSError:
+    print("""
+
+***** WARNING: Can't seem to find swig (http://www.swig.org/) on your system.
+
+If the installation fails, try installing it using your system's package
+manager (apt-get/brew/rpm etc).
+
+""")
 
 setup(
     name='pycrxlib',
@@ -25,4 +39,5 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
     ),
+    install_requires=('M2Crypto',),
 )
