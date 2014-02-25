@@ -5,7 +5,7 @@ def write(dirpath, crxpath, pemfile=None, pem=None):
         with open(pemfile) as fp:
             pem = fp.read()
 
-    data = writer.zipdir('test/dirfix')
+    data = writer.zipdir(dirpath)
     der_key, signed = writer.sign(data, pem)
 
     with open(crxpath, 'w') as out:
