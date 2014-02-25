@@ -2,6 +2,8 @@ import os
 import io
 import zipfile
 
+from M2Crypto import EVP
+
 def zipdir(path):
     def dozip(path, fp):
         for root, dirs, files in os.walk(path):
@@ -14,3 +16,8 @@ def zipdir(path):
         zfp.close()
         return stream.getvalue()
 
+def sign(data, pem):
+    pkey = EVP.load_key_string(pem)
+    pkey.sign_init()
+    pkey.sign_update(data)
+    return pkey.sign_final()
