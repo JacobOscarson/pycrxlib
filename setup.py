@@ -39,5 +39,5 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
     ),
-    install_requires=('M2Crypto',),
+    install_requires=('M2Crypto>=0.20.2',),
 )
