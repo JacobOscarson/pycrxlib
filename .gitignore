@@ -6,3 +6,4 @@
 poc.py
 *.zip
 test-ext.crx
+dist
